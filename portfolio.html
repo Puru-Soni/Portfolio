@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Resume | Puru Soni</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate Gray & Teal -->
+    <!-- Application Structure Plan: A single-page, vertical-scrolling application with a fixed top navigation for intuitive access to key sections. The structure is designed to guide a recruiter through a narrative: starting with a high-level summary, moving to an interactive career timeline that visualizes growth, then to a filterable skills dashboard for detailed capability assessment, and finally highlighting key quantifiable impacts. This non-linear but guided approach is chosen over a static list to be more engaging, memorable, and allow for quick, user-driven information discovery, which is optimal for busy recruiters. -->
+    <!-- Visualization & Content Choices: 
+        - Career Experience -> Goal: Show Progression -> Viz: Interactive Horizontal Timeline (HTML/CSS/JS) -> Interaction: Click on a job title to display its details below. -> Justification: More engaging than a text block; visually separates roles and shows career path.
+        - Technical Skills -> Goal: Compare/Organize -> Viz: Horizontal Bar Chart (Chart.js) -> Interaction: Filter buttons to switch between skill categories (Languages, Frameworks, etc.). -> Justification: Transforms a static list into an interactive data visualization, allowing recruiters to focus on skills relevant to their needs.
+        - Key Achievements -> Goal: Inform/Impact -> Viz: KPI Cards (HTML/Tailwind) -> Interaction: Static display. -> Justification: Draws immediate attention to the most significant, quantifiable accomplishments.
+        - Projects/Education -> Goal: Inform -> Viz: Clean Cards (HTML/Tailwind) -> Interaction: Static display. -> Justification: Presents supporting information in a structured, clean format without distracting from core sections.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
+        }
+        .nav-link {
+            transition: color 0.3s ease, border-color 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #0d9488; /* teal-600 */
+            border-bottom-color: #0d9488;
+        }
+        .timeline-item {
+            cursor: pointer;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .timeline-item:hover {
+            transform: scale(1.1);
+        }
+        .timeline-item.active .timeline-dot {
+            background-color: #0d9488; /* teal-600 */
+        }
+        .timeline-item.active .timeline-title {
+            color: #0d9488; /* teal-600 */
+            font-weight: 600;
+        }
+        .skill-filter-btn {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .skill-filter-btn.active {
+            background-color: #0d9488; /* teal-600 */
+            color: white;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl text-slate-800">Puru Soni</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#summary" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600">Summary</a>
+                        <a href="#experience" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600">Experience</a>
+                        <a href="#skills" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600">Skills</a>
+                        <a href="#impact" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600">Impact</a>
+                        <a href="#projects" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600">Projects</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section id="summary" class="py-20 md:py-28 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">Senior Software Engineer</h1>
+                <p class="mt-6 text-lg leading-8 text-slate-600">
+                    Results-oriented Senior Software Engineer specializing in backend development with proven expertise in Java, Spring Boot, and microservices architecture. Adept at leading complex projects and collaborating effectively in large, cross-functional teams to deliver high-quality, scalable software solutions.
+                </p>
+                <div class="mt-8 flex items-center justify-center gap-x-6">
+                    <a href="mailto:purusoni05@gmail.com" class="rounded-md bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">Contact Me</a>
+                    <a href="https://linkedin.com/in/puru-soni" target="_blank" class="text-sm font-semibold leading-6 text-slate-900">LinkedIn <span aria-hidden="true">→</span></a>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="py-20 md:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Career Timeline</h2>
+                    <p class="mt-4 text-lg leading-8 text-slate-600">An interactive overview of my professional journey. Click on a role to see the details.</p>
+                </div>
+
+                <div class="mt-16">
+                    <div class="relative">
+                        <div class="absolute left-1/2 w-0.5 h-full bg-slate-200" aria-hidden="true"></div>
+                        <div id="timeline-container" class="flex justify-between items-center w-full">
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="experience-details" class="mt-12 min-h-[300px] bg-white p-8 rounded-xl shadow-lg transition-opacity duration-500 ease-in-out">
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-20 md:py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Technical Skills Dashboard</h2>
+                    <p class="mt-4 text-lg leading-8 text-slate-600">A dynamic look at my technical capabilities. Use the filters to explore different skill sets.</p>
+                </div>
+
+                <div class="mt-12 flex justify-center flex-wrap gap-2 md:gap-4" id="skill-filters">
+                </div>
+
+                <div class="mt-8">
+                    <div class="chart-container">
+                        <canvas id="skillsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="py-20 md:py-24">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Key Impact & Achievements</h2>
+                     <p class="mt-4 text-lg leading-8 text-slate-600">Highlighting my most significant contributions and recognitions.</p>
+                </div>
+                <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <div class="text-5xl font-bold text-teal-600">40%</div>
+                        <p class="mt-2 text-base text-slate-600">Reduction in processing time for mission-critical save and load APIs.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <div class="text-5xl font-bold text-teal-600">FY25</div>
+                        <p class="mt-2 text-base text-slate-600">Recognized as a Top Talent for exceptional performance and contributions.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <div class="text-5xl font-bold text-teal-600">FY24</div>
+                        <p class="mt-2 text-base text-slate-600">Recognized as a Top Talent for exceptional performance and contributions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-20 md:py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Projects & Academics</h2>
+                    <p class="mt-4 text-lg leading-8 text-slate-600">Foundational projects and educational background.</p>
+                </div>
+                <div class="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-slate-50 p-8 rounded-xl border border-slate-200">
+                        <h3 class="text-xl font-semibold text-slate-800">React Developer, Internship</h3>
+                        <p class="text-sm text-slate-500 mt-1">Celebal Technologies | Amazon Clone Project</p>
+                        <ul class="mt-4 space-y-2 text-slate-600 list-disc list-inside">
+                            <li>Independently engineered a responsive e-commerce website mirroring Amazon's user interface using React.</li>
+                            <li>Implemented front-end routing and page navigation for user sign-in, home, cart, and checkout functionalities using `react-router-dom`.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-50 p-8 rounded-xl border border-slate-200">
+                        <h3 class="text-xl font-semibold text-slate-800">Bachelor of Technology (Honours)</h3>
+                        <p class="text-sm text-slate-500 mt-1">Poornima College of Engineering | Computer Science</p>
+                        <ul class="mt-4 space-y-2 text-slate-600 list-disc list-inside">
+                            <li>Graduated with a CGPA of 8.3/10.</li>
+                            <li>Focused on core computer science fundamentals, algorithms, and software engineering principles.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2024 Puru Soni. All rights reserved.</p>
+            <p class="mt-2 text-sm text-slate-400">Interactive resume created to showcase skills and experience.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const experienceData = [
+                {
+                    id: 'trainee',
+                    title: 'Software Engineer, Trainee',
+                    company: 'Persistent Systems Limited',
+                    duration: 'Sep 2023 - Oct 2023',
+                    details: [
+                        'Developed and delivered an internal backend project using Spring Boot to provide differentiated tour and travel packages, enhancing the user experience.',
+                        'Collaborated with the frontend team to seamlessly integrate React components, ensuring robust backend support and service connectivity.',
+                        'Contributed to bug fixing and authentication feature improvements within a 6-member backend team, consistently meeting all sprint deadlines.'
+                    ]
+                },
+                {
+                    id: 'swe',
+                    title: 'Software Engineer',
+                    company: 'Persistent Systems Limited',
+                    duration: 'Nov 2023 - Mar 2023',
+                    details: [
+                        'Reduced processing time by over 40% for mission-critical save and load APIs by re-engineering logic and eliminating redundant client-side calls.',
+                        'Upgraded transaction operation APIs from REST to GraphQL, enhancing functionality and improving user satisfaction.',
+                        'Developed and deployed a highly requested transaction printing feature, directly addressing key customer needs.',
+                        'Played a critical role in a large-scale frontend migration by implementing new features with minimal disruption and managing feature flags for safe rollbacks.',
+                        'Managed comprehensive bug and security defect resolutions, interacting directly with customers and multiple Intuit teams to provide high-level support.'
+                    ]
+                },
+                {
+                    id: 'sr-swe',
+                    title: 'Senior Software Engineer',
+                    company: 'Persistent Systems Limited',
+                    duration: 'Apr 2023 - Present',
+                    details: [
+                        'Earned promotion to Senior Software Engineer for exemplary backend development, leadership, and consistent delivery on complex projects.',
+                        'Led the smooth execution of transaction-core operations, demonstrating high proficiency in handling sensitive and intricate backend tasks.',
+                        'Established a reputation for reliability and ownership within the core team, ensuring project confidence and successful outcomes.'
+                    ]
+                }
+            ];
+
+            const skillsData = {
+                'Languages': { labels: ['Java', 'SQL', 'JavaScript', 'HTML', 'JSON'], values: [90, 85, 80, 80, 90] },
+                'Frameworks': { labels: ['Spring Boot', 'Spring MVC', 'Spring JPA', 'Hibernate', 'Spring'], values: [95, 90, 90, 85, 90] },
+                'Architecture': { labels: ['Microservices', 'RESTful APIs', 'GraphQL', 'Monolithic'], values: [90, 95, 85, 80] },
+                'Cloud & DevOps': { labels: ['Docker', 'AWS', 'Git', 'Maven', 'Splunk'], values: [80, 75, 95, 90, 70] },
+                'Testing & Tools': { labels: ['JUnit 5', 'Postman', 'Jira'], values: [85, 95, 90] }
+            };
+
+            const timelineContainer = document.getElementById('timeline-container');
+            const detailsContainer = document.getElementById('experience-details');
+            
+            function renderTimeline() {
+                experienceData.forEach((job, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'timeline-item relative flex flex-col items-center';
+                    item.dataset.jobId = job.id;
+                    item.innerHTML = `
+                        <div class="timeline-dot w-4 h-4 bg-slate-300 rounded-full z-10"></div>
+                        <p class="timeline-title mt-2 text-sm text-center text-slate-600">${job.title}</p>
+                    `;
+                    timelineContainer.appendChild(item);
+                });
+            }
+
+            function updateDetails(jobId) {
+                const job = experienceData.find(j => j.id === jobId);
+                if (job) {
+                    detailsContainer.style.opacity = 0;
+                    setTimeout(() => {
+                        detailsContainer.innerHTML = `
+                            <h3 class="text-2xl font-bold text-slate-800">${job.title}</h3>
+                            <p class="mt-1 text-md text-teal-600 font-semibold">${job.company} | ${job.duration}</p>
+                            <ul class="mt-4 space-y-3 text-slate-600 list-disc list-inside">
+                                ${job.details.map(d => `<li>${d}</li>`).join('')}
+                            </ul>
+                        `;
+                        detailsContainer.style.opacity = 1;
+                    }, 300);
+                }
+            }
+
+            timelineContainer.addEventListener('click', (e) => {
+                const item = e.target.closest('.timeline-item');
+                if (item) {
+                    const jobId = item.dataset.jobId;
+                    document.querySelectorAll('.timeline-item').forEach(el => el.classList.remove('active'));
+                    item.classList.add('active');
+                    updateDetails(jobId);
+                }
+            });
+            
+            renderTimeline();
+            document.querySelector('.timeline-item:last-child').click();
+
+
+            let skillsChart;
+            const chartCanvas = document.getElementById('skillsChart').getContext('2d');
+            const skillFiltersContainer = document.getElementById('skill-filters');
+
+            function createOrUpdateChart(category) {
+                const data = skillsData[category];
+                if (skillsChart) {
+                    skillsChart.destroy();
+                }
+                skillsChart = new Chart(chartCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Proficiency',
+                            data: data.values,
+                            backgroundColor: 'rgba(13, 148, 136, 0.6)', // teal-600 with opacity
+                            borderColor: 'rgba(13, 148, 136, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return ` Proficiency: ${context.raw}%`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: '#e2e8f0' // slate-200
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            Object.keys(skillsData).forEach(category => {
+                const button = document.createElement('button');
+                button.className = 'skill-filter-btn px-4 py-2 text-sm font-medium rounded-full border border-slate-300 text-slate-600 hover:bg-slate-100';
+                button.textContent = category;
+                button.dataset.category = category;
+                skillFiltersContainer.appendChild(button);
+            });
+
+            skillFiltersContainer.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    const category = e.target.dataset.category;
+                    document.querySelectorAll('.skill-filter-btn').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    createOrUpdateChart(category);
+                }
+            });
+            
+            document.querySelector('.skill-filter-btn').click();
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
